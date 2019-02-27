@@ -1,11 +1,10 @@
-# Título del trabajo
+# Tienda Online
 
-Descripción breve del proyecto a realizar (2-3 frases).
+Programa que simula estar en una tienda online de ropa.
 
-## Integrantes del equipo
-
-Nombres, apellidos, y usuario GitHub de los integrantes del equipo.
+## Integrantes de grupo
+Álvaro Espinosa Rico (alvaroespinosarico) Sergio Fernando Cajachagua Grefa (sergiocaja)
 
 ## Objetivos del trabajo
 
-Lista de los objetivos que se persiguen con el trabajo propuesto.
+Programa que simula estar en una tienda online de ropa en el que habrá un menú con diferentes funciones entre las que se encuentran: la tienda online, el tipo de envio, selecionar tallas, la forma de pago, etc.
