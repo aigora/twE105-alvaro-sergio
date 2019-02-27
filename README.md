@@ -3,7 +3,8 @@
 Programa que simula estar en una tienda online de ropa.
 
 ## Integrantes de grupo
-Álvaro Espinosa Rico (alvaroespinosarico) Sergio Fernando Cajachagua Grefa (sergiocaja)
+- Álvaro Espinosa Rico (alvaroespinosarico)
+- Sergio Fernando Cajachagua Grefa (sergiocaja)
 
 ## Objetivos del trabajo
 
