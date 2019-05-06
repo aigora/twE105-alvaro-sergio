@@ -1,0 +1,221 @@
+#include <stdio.h> //Función de printf y scanf
+#include <locale.h> //Escribir en español
+#include <math.h> //Matemáticas
+#include <string.h> //Cadena de caracteres
+#include <stdlib.h> //Ficheros
+
+#define PI 3.14159265 //Definimos PI
+
+typedef struct //Estructura para las coordenadas de los puntos del cuadrado y del rectángulo
+{
+	int x;
+	int y;
+}coordenadas;
+
+//FUNCIONES
+float funciondatos (void);
+float perimetrocirculo (float r);
+float areacirculo (float r);
+float distanciaentrepuntos (coordenadas punto1, coordenadas punto2);
+float perimetrocuadrado (float lado);
+float areacuadrado (float lado);
+float perimetrotriangulo (float lado1, float lado2, float lado3);
+void fichero (FILE *pf, float acirculo, float pcirculo, float acuadrado, float pcuadrado, float ptriangulo);
+
+int main (void)
+
+{
+	setlocale(LC_CTYPE, "Spanish"); //Escribir en español
+	
+	FILE *pf; //Fichero
+	
+	int opcion; //Opciones
+	float radio, lado, lado1, lado2, lado3; //Datos
+	float pcirculo, acirculo, pcuadrado, acuadrado, ptriangulo; //Soluciones
+	coordenadas cuadrado [2]; //Vector coordenadas de los puntos del cuadrado
+	coordenadas triangulo [3]; //Vector coordenadas de los puntos del triangulo
+	int i, sc; //Variables auxiliares
+	char respuesta[2]; //Vector respuesta
+	
+	do
+	{
+		printf ("\n\nBienvenido, este programa calcula ÁREAS y PERÍMETROS de distintas figuras.\nElija una opción del MENÚ\n\n");
+		printf ("1. CÍRCULO\n2. CUADRADO\n3. TRIÁNGULO\n4. SALIR\n\n");
+		sc = scanf ("%i", &opcion);
+		getchar (); //Limpiar el buffer
+		while (sc != 1 || opcion < 1 || opcion > 4)
+		{
+			printf ("Por favor seleciona una opción del menú: ");
+			sc = scanf ("%i", &opcion);
+			getchar(); //Limpiar el buffer
+		}
+		
+		switch (opcion)
+		{
+			case 1:
+				printf ("\nHa elegido el CÍRCULO\n");
+				printf ("Introduce el RADIO del círculo (en metros): ");
+				radio = funciondatos();
+				pcirculo = perimetrocirculo (radio);
+				acirculo = areacirculo (radio);
+				
+				printf ("\nEl ÁREA del CÍRCULO es: %f\nEl PERÍMETRO del CÍRCULO es: %f", acirculo, pcirculo);
+					
+				break;
+		
+			case 2:
+				printf ("\nHa elegido el CUADRADO\n");
+				printf ("Introduce 2 vértices consecutivos del cuadrado:\n");
+				for (i=0; i < 2; i++)
+				{
+					printf ("\nv[%i] = ", i);
+					scanf ("%i %i", &cuadrado[i].x, &cuadrado[i].y);
+				}
+				printf ("\nLos vértices de tu cuadrado son: (%i, %i) y (%i, %i)", cuadrado[0].x, cuadrado[0].y, cuadrado[1].x, cuadrado[1].y);
+				lado = distanciaentrepuntos(cuadrado[0], cuadrado[1]);
+				pcuadrado = perimetrocuadrado (lado);
+				acuadrado = areacuadrado (lado);
+				
+				printf ("\n\nEl ÁREA del CUADRADO es: %f\nEl PERÍMETRO del CUADRADO es: %f", acuadrado, pcuadrado);
+					
+				break;	
+			
+			case 3:
+				printf ("\nHa elegido el TRIÁNGULO\nEn esta opción solo puedo calcular el PERÍMETRO");
+				printf ("\nIntroduce los 3 vértices del triángulo:\n\n");
+				for (i=0; i < 3; i++)
+				{
+					printf ("v[%i] = ", i);
+					scanf ("%i %i", &triangulo[i].x, &triangulo[i].y);
+					printf ("\n");
+				}
+				printf ("\nLos vértices de tu triangulo son: (%i, %i)  (%i, %i)  (%i, %i)", triangulo[0].x, triangulo[0].y, triangulo[1].x, triangulo[1].y, triangulo[2].x, triangulo[2].y);
+				lado1 = distanciaentrepuntos(triangulo[0], triangulo[1]);
+				lado2 = distanciaentrepuntos(triangulo[1], triangulo[2]);
+				lado3 = distanciaentrepuntos(triangulo[2], triangulo[0]);
+				ptriangulo = perimetrotriangulo (lado1, lado2, lado3);
+				
+				printf ("\n\nEl PERÍMETRO de su TRIÁNGULO es: %f", ptriangulo);
+				
+				break;
+				
+			case 4:
+				printf("\nAdiós\n\n\n");
+				
+		}
+		
+		if (opcion !=4)
+		{
+			printf ("\n\n\n¿Quiere volver al MENÚ? (si/no): ");
+			scanf ("%s", respuesta);
+			while (getchar()!=10);
+			while ((respuesta[0] != 's' && respuesta[1] != 'i') && (respuesta[0] != 'n' && respuesta[1] != 'o')) //Respuesta distinta de si o no
+			{
+				printf ("Responda \'si\' o \'no\': ");
+				scanf ("%s", respuesta);
+				while (getchar()!=10); //Limpiar el buffer
+			}
+		}
+	}
+	while (respuesta[0] == 's' && respuesta[1] == 'i' && opcion != 4);
+	
+	if (opcion != 4)
+		printf ("\nAdiós\n\n\n");
+	
+	//Fichero	
+	pf = fopen("soluciones.txt", "w");
+	fichero(pf, acirculo, pcirculo, acuadrado, pcuadrado, ptriangulo);
+	fclose(pf);
+	
+	return 0;
+}
+
+
+//FUNCIÓN CONTROL DE DATOS
+
+float funciondatos(void)
+{
+	float sc, dato;
+	do
+	{
+		sc = scanf("%f", &dato);
+		if (sc != 1 || dato < 0)
+			printf ("Dato incorrecto. Introduzca un número positivo: ");
+		while (getchar()!=10); //Limpiar el buffer
+	}
+	while (sc != 1 || dato < 0);
+	return dato;
+}
+
+
+//FUNCIONES CÍRCULO
+
+float perimetrocirculo(float r)
+{
+	float perimetro;
+	perimetro = 2 * PI * r;
+	return perimetro;
+}
+
+float areacirculo (float r)
+{
+	float area;
+	area = PI * r * r;
+	return area;
+}
+
+//FUNCIÓN DISTANCIA
+
+float distanciaentrepuntos (coordenadas punto1, coordenadas punto2)
+{
+	float distancia;
+	distancia = sqrt(pow((punto2.x - punto1.x),2) + pow((punto2.y - punto1.y),2));
+	return distancia;
+}
+
+//FUNCIONES CUADRADO
+
+float perimetrocuadrado (float lado)
+{
+	float perimetro;
+	perimetro = lado * 4;
+	return perimetro;
+}
+
+float areacuadrado (float lado)
+{
+	float area;
+	area = lado * lado;
+	return area;
+}
+
+//FUNCIÓN TRIÁNGULO
+
+float perimetrotriangulo (float lado1, float lado2, float lado3)
+{
+	float perimetro;
+	perimetro = lado1 + lado2 + lado3;
+	return perimetro;
+}
+
+//FUNCIÓN FICHERO
+
+void fichero (FILE *pf, float acirculo, float pcirculo, float acuadrado, float pcuadrado, float ptriangulo)
+{
+	fprintf (pf, "Estos son tus resultados: ");
+	if (acirculo != 0)
+		fprintf (pf, "\nEl ÁREA del CÍRCULO es: %f", acirculo);
+	if (pcirculo != 0)
+		fprintf (pf, "\nEl PERÍMETRO del CÍRCULO es: %f", pcirculo);
+	if (acuadrado != 0)
+		fprintf (pf, "\nEl ÁREA del CUADRADO es: %f", acuadrado);
+	if (pcuadrado != 0)
+		fprintf (pf, "\nEl PERÍMETRO del CUADRADO es: %f", pcuadrado);
+	if (ptriangulo != 0)
+		fprintf (pf, "\nEl PERÍMETRO de su TRIÁNGULO es: %f", ptriangulo);
+}
+
+
+
+
+
